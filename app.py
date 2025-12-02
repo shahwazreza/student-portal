@@ -21,6 +21,17 @@ def init_db():
         )
     """)
 
+    # Course Table?
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS courses (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              code TEXT NOT NULL,
+              name TEXT NOT NULL
+              )
+    """)
+
+    # Enrollment Table?
+
     conn.commit()
     conn.close()
 
