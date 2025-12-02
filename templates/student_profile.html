@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Profile</title>
+</head>
+
+<body>
+    <h2>{{ user.name }}'s Profile</h2>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+
+    <h3>Enrolled Courses</h3>
+    <ul>
+        {% for course in courses %}
+        <li>{{ course.name }} (Code: {{ course.code }}) - Grade: {{ course.grade or "N/A" }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="/dashboard">Back to Dashboard</a> |
+    <a href="/logout">Logout</a>
+</body>
+
+</html>
+
+</html>

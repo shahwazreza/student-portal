@@ -11,6 +11,7 @@ def init_db():
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
 
+    # Users Table
     c.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -21,7 +22,7 @@ def init_db():
         )
     """)
 
-    # Course Table?
+    # Course Table
     c.execute("""
         CREATE TABLE IF NOT EXISTS courses (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,7 +31,17 @@ def init_db():
               )
     """)
 
-    # Enrollment Table?
+    # Enrollment Table
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS enrllments (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              student_id INTEGER NOT NULL,
+              course_id INTEGER NOT NULL,
+              grade TEXT,
+              FOREIGN KEY(student_id) REFERENCES users(id),
+              FOREIGN KEY(course_id) REFERENCES courses(id)
+              )
+    """)
 
     conn.commit()
     conn.close()
@@ -94,6 +105,33 @@ def dashboard():
     }
 
     return render_template("dashboard.html", user=user)
+
+
+@app.route("/profile")
+def profile():
+    if "user" not in session:
+        return redirect("/")
+
+    user = {
+        "id": session["user"][0],
+        "name": session["user"][1],
+        "email": session["user"][2],
+        "role": session["user"][4]
+    }
+
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+    c.execute("""
+        SELECT courses.name, corses.code, enrollments.grade
+        FROM enrollments
+        JOIN courses ON enrollments.course_id = course.id
+        WHERE enrollments.student_id =?
+    """, (user["id"],))
+    courses = [{"name": row[0], "code": row[1], "grade": row[2]}
+               for row in c.fetchall()]
+    conn.close()
+
+    return render_templlate("student_profile.html", user=user, courses=courses)
 
 
 @app.route("/logout")
