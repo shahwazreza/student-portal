@@ -33,7 +33,7 @@ def init_db():
 
     # Enrollment Table
     c.execute("""
-        CREATE TABLE IF NOT EXISTS enrllments (
+        CREATE TABLE IF NOT EXISTS enrollments (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               student_id INTEGER NOT NULL,
               course_id INTEGER NOT NULL,
@@ -122,16 +122,16 @@ def profile():
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
     c.execute("""
-        SELECT courses.name, corses.code, enrollments.grade
+        SELECT courses.name, courses.code, enrollments.grade
         FROM enrollments
-        JOIN courses ON enrollments.course_id = course.id
+        JOIN courses ON enrollments.course_id = courses.id
         WHERE enrollments.student_id =?
     """, (user["id"],))
     courses = [{"name": row[0], "code": row[1], "grade": row[2]}
                for row in c.fetchall()]
     conn.close()
 
-    return render_templlate("student_profile.html", user=user, courses=courses)
+    return render_template("student_profile.html", user=user, courses=courses)
 
 
 @app.route("/logout")
