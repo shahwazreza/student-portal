@@ -127,6 +127,60 @@ def admin_dashboard():
     return render_template("admin_dashboard.html", students=students)
 
 
+@app.route("/admin/add_course", methods=["GET", "POST"])
+def add_course():
+    if "user" not in session or session["user"][4] != "admin":
+        return redirect("/")
+
+    if request.method == "POST":
+        code = request.form["code"]
+        name = request.form["name"]
+
+        conn = sqlite3.connect("database.db")
+        c = conn.cursor()
+        c.execute("INSERT INTO courses (code, name) VALUES (?, ?)", (code, name))
+        conn.commit()
+        conn.close()
+
+        return redirect("/admin/dashboard")
+    return render_template("add_course.html")
+
+
+@app.route("/admin/enroll_student", methods=["GET", "POST"])
+def enroll_student():
+    if "user" not in session or session["user"][4] != "admin":
+        return redirect("/")
+
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+
+    c.execute("SELECT id, name, email FROM users WHERE role='student'")
+    students = [{"id": row[0], "name": row[1], "email": row[2]}
+                for row in c.fetchall()]
+
+    c.execute("SELECT id, code, name FROM courses")
+    courses = [{"id": row[0], "code": row[1], "name": row[2]}
+               for row in c.fetchall()]
+
+    if request.method == "POST":
+        student_id = request.form["student_id"]
+        course_id = request.form["course_id"]
+
+        # Prevent dublicate enrollments
+        c.execute("SELECT * FROM enrollments WHERE student_id=? AND course_id=?",
+                  (student_id, course_id))
+        if not c.fetchone():
+            c.execute(
+                "INSERT INTO enrollments (student_id, course_id) VALUES (?, ?)", (student_id, course_id))
+            conn.commit()
+
+        conn.close()
+        return redirect("/admin/dashboard")
+
+    conn.close()
+    return render_template("enroll_student.html", students=students, courses=courses)
+
+
 @app.route("/profile")
 def profile():
     if "user" not in session:

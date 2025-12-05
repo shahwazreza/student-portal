@@ -9,6 +9,9 @@
     <h2>Admin Dashboard</h2>
     <p>Welcome, {{ session['user'][1] }}!</p>
 
+    <p><a href="/admin/add_course">Add New Course</a></p>
+    <p><a href="/admin/enroll_student">Enroll Student in Course</a></p>
+
     <h3>All Students</h3>
     <ul>
         {% for student in students %}
