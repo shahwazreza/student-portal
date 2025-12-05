@@ -11,6 +11,9 @@ def init_db():
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
 
+    c.execute("INSERT OR IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
+              ("Admin", "admin@example.com", "admin123", "admin"))
+
     # Users Table
     c.execute("""
         CREATE TABLE IF NOT EXISTS users (
@@ -87,6 +90,8 @@ def login():
 
     if user:
         session["user"] = user
+        if user[4] == "admin":
+            return redirect("/admin/dashboard")
         return redirect("/dashboard")
 
     return "Invalid login!"
@@ -105,6 +110,21 @@ def dashboard():
     }
 
     return render_template("dashboard.html", user=user)
+
+
+@app.route("/admin/dashboard")
+def admin_dashboard():
+    if "user" not in session or session["user"][4] != "admin":
+        return redirect("/")
+
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+    c.execute("SELECT id, name, email FROM users WHERE role='student'")
+    students = [{"id": row[0], "name": row[1], "email": row[2]}
+                for row in c.fetchall()]
+    conn.close()
+
+    return render_template("admin_dashboard.html", students=students)
 
 
 @app.route("/profile")

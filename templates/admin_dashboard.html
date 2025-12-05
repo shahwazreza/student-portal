@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Dashboard</title>
+</head>
+
+<body>
+    <h2>Admin Dashboard</h2>
+    <p>Welcome, {{ session['user'][1] }}!</p>
+
+    <h3>All Students</h3>
+    <ul>
+        {% for student in students %}
+        <li>{{ student.name }} ({{ student.email }})</li>
+        {% endfor %}
+    </ul>
+
+    <a href="/logout">Logout</a>
+</body>
+
+</html>
