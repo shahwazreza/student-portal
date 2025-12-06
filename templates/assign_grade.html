@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Assign Grades</title>
+</head>
+
+<body>
+    <h2>Assign Grade</h2>
+
+    <form action="/admin/assign_grade" method="POST">
+        <label>Enrollment:</label>
+        <select name="enrollment_id" required>
+            {% for e in enrollments %}
+            <option value="{{ e.id }}">{{ e.student_name }} → {{ e.course_name }} ({{ e.course_code }}) - Current Grade:
+                {{ e.grade or "N/A" }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label>Grade:</label>
+        <input type="text" name="grade" required><br><br>
+
+        <button type="submit">Assign Grade</button>
+    </form>
+
+    <p><a href="/admin/dashboard">Back to Dashboard</a></p>
+</body>
+
+</html>

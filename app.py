@@ -181,6 +181,37 @@ def enroll_student():
     return render_template("enroll_student.html", students=students, courses=courses)
 
 
+@app.route("/admin/assign_grade", methods=["GET", "POST"])
+def assign_grade():
+    if "user" not in session or session["user"][4] != "admin":
+        return redirect("/")
+
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+
+    c.execute("""
+        SELECT enrollments.id, users.name, courses.name, courses.code, enrollments.grade
+        FROM enrollments
+        JOIN users ON enrollments.student_id = users.id
+        JOIN courses ON enrollments.course_id = courses.id
+    """)
+    enrollments = [{"id": row[0], "student_name": row[1], "course_name": row[2],
+                    "course_code": row[3], "grade": row[4]} for row in c.fetchall()]
+
+    if request.method == "POST":
+        enrollment_id = request.form["enrollment_id"]
+        grade = request.form["grade"]
+
+        c.execute("UPDATE enrollments SET grade=? WHERE id=?",
+                  (grade, enrollment_id))
+        conn.commit()
+        conn.close()
+        return redirect("/admin/dashboard")
+
+    conn.close()
+    return render_template("assign_grade.html", enrollments=enrollments)
+
+
 @app.route("/profile")
 def profile():
     if "user" not in session:
