@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Gradebook</title>
-</head>
+{% block content %}
 
-<body>
+<h2>Gradebook</h2>
 
-    <h2>Gradebook</h2>
-
-    <table border="1" cellpadding="10">
+<table class="table table-striped table-hover shadow-sm">
+    <thead>
         <tr>
             <th>Student</th>
             <th>Email</th>
@@ -17,18 +13,18 @@
             <th>Code</th>
             <th>Grade</th>
         </tr>
-
+    </thead>
+    <tbody>
         {% for g in gradebook %}
         <tr>
             <td>{{ g.student_name }}</td>
             <td>{{ g.student_email }}</td>
             <td>{{ g.course_name }}</td>
             <td>{{ g.course_code }}</td>
-            <td>{% if g.grade %}{{ g.grade }}{% else %}<em>Not Assigned</em>{% endif %}</td>
+            <td>{{ g.grade }}</td>
         </tr>
         {% endfor %}
-    </table>
+    </tbody>
+</table>
 
-</body>
-
-</html>
+{% endblock %}

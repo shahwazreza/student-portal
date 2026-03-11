@@ -1,27 +1,43 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Admin Dashboard</title>
-</head>
+{% block content %}
+<div class="container mt-4">
 
-<body>
     <h2>Admin Dashboard</h2>
     <p>Welcome, {{ session['user'][1] }}!</p>
 
-    <p><a href="/admin/add_course">Add New Course</a></p>
-    <p><a href="/admin/enroll_student">Enroll Student in Course</a></p>
-    <p><a href="/admin/assign_grade">Assign Grades</a></p>
-    <li><a href="/admin/grades">View Gradebook</a></li>
+    <!-- Quick action buttons -->
+    <div class="mb-4">
+        <a class="btn btn-primary btn-custom me-2" href="/admin/add_course">Add New Course</a>
+        <a class="btn btn-primary btn-custom me-2" href="/admin/enroll_student">Enroll Student</a>
+        <a class="btn btn-primary btn-custom me-2" href="/admin/assign_grade">Assign Grades</a>
+        <a class="btn btn-secondary btn-custom" href="/admin/grades">View Gradebook</a>
+    </div>
 
+    <!-- Summary cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card p-3 shadow-sm">
+                <h5>Total Students</h5>
+                <p>{{ students|length }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3 shadow-sm">
+                <h5>Total Courses</h5>
+                <p>{{ courses|length }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student list -->
     <h3>All Students</h3>
-    <ul>
+    <ul class="list-group">
         {% for student in students %}
-        <li>{{ student.name }} ({{ student.email }})</li>
+        <li class="list-group-item">{{ student.name }} ({{ student.email }})</li>
         {% endfor %}
     </ul>
 
-    <a href="/logout">Logout</a>
-</body>
 
-</html>
+</div>
+{% endblock %}

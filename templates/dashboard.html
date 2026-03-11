@@ -1,21 +1,10 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Dashboard</title>
-</head>
+{% block content %}
 
-<body>
-    <h2>Welcome, {{ user.name }}!</h2>
+<div class="card p-4">
+    <h2>Welcome {{ user.name }}</h2>
+    <p>Email: {{ user.email }}</p>
+</div>
 
-    <h3>Your Profile</h3>
-    <p><strong>Name:</strong> {{ user.name }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Role:</strong> {{ user.role }}</p>
-    <p><a href="/profile">View Profile & Courses</a></p>
-
-    <br>
-    <a href="/logout">Logout</a>
-</body>
-
-</html>
+{% endblock %}

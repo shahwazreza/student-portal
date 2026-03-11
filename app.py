@@ -166,7 +166,7 @@ def enroll_student():
         student_id = request.form["student_id"]
         course_id = request.form["course_id"]
 
-        # Prevent dublicate enrollments
+        # Prevent duplicate enrollments
         c.execute("SELECT * FROM enrollments WHERE student_id=? AND course_id=?",
                   (student_id, course_id))
         if not c.fetchone():
@@ -238,6 +238,35 @@ def admin_grades():
     conn.close()
 
     return render_template("grades.html", gradebook=gradebook)
+
+
+@app.route("/admin/detele_student/<int:student_id>")
+def delete_student(student_id):
+    if "user" not in session or session["user"][4] != "admin":
+        return redirect("/")
+
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+
+    c.execute("DELETE FROM enrollments WHERE student_id=?", (student_id,))
+    c.execute("DELETE FROM users WHERE id=?", (student_id,))
+
+    conn.comit()
+    conn.close()
+
+    return redirect("/admin/dashboard")
+
+
+@app.route("/admin/edit_student/<int:student_id>", methods=["GET", "POST"])
+def edit_student(student_id):
+    if "user" not in session or session["user"][4] != "admin":
+        return redirect("/")
+
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+
+    if request.method == "POST":
+        new_name = request.method
 
 
 @app.route("/profile")
